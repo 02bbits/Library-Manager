@@ -13,10 +13,6 @@ public class Book {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -51,6 +47,13 @@ public class Book {
 
     public Book(int id, String name, String author, String publisher, int status) {
         this.id = id;
+        this.name = name;
+        this.author = author;
+        this.publisher = publisher;
+        this.status = status;
+    }
+
+    public Book(String name, String author, String publisher, int status) {
         this.name = name;
         this.author = author;
         this.publisher = publisher;

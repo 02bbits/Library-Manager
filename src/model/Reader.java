@@ -11,10 +11,6 @@ public class Reader {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -49,6 +45,13 @@ public class Reader {
 
     public Reader(int id, String name, String _class, String email, String phoneNumber) {
         this.id = id;
+        this.name = name;
+        this._class = _class;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Reader(String name, String _class, String email, String phoneNumber) {
         this.name = name;
         this._class = _class;
         this.email = email;
