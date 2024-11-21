@@ -11,31 +11,28 @@ public class LoginPanel extends JFrame {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
         } catch(Exception ignored){}
 
-        // Set up the frame
         setTitle("Login Page");
-        setSize(500, 400);
+        setSize(400, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window
+        setLocationRelativeTo(null);
         setResizable(false);
 
-        // Create the main panel with a gradient background
-        GradientPanel mainPanel = new GradientPanel();
-        mainPanel.setLayout(new BorderLayout()); // Use BorderLayout for structured placement
 
-        // Add a title or image at the top
+        GradientPanel loginPanel = new GradientPanel();
+        loginPanel.setLayout(new BorderLayout());
+
         JLabel titleLabel = new JLabel("Login", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 40));
         titleLabel.setForeground(Color.WHITE);
-        titleLabel.setBorder(new EmptyBorder(90,0,0,0));
-        mainPanel.add(titleLabel, BorderLayout.NORTH);
-        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        titleLabel.setBorder(new EmptyBorder(70,0,0,0));
+        loginPanel.add(titleLabel, BorderLayout.NORTH);
+        loginPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create the login form panel
         JPanel loginForm = new JPanel();
         loginForm.setLayout(new GridBagLayout());
-        loginForm.setOpaque(false); // Make the panel transparent to show the gradient background
+        loginForm.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Padding between elements
+        gbc.insets = new Insets(0, 10, 10, 10);
 
         // Add username and password fields with labels
         JLabel usernameLabel = new JLabel();
@@ -66,11 +63,12 @@ public class LoginPanel extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
         loginForm.add(passwordField, gbc);
 
-        // Add login and cancel buttons
         JButton btnLogin = new JButton("Login");
         JButton btnCancel = new JButton("Cancel");
+        btnLogin.setFont(new Font("Arial", Font.BOLD, 12));
+        btnCancel.setFont(new Font("Arial", Font.BOLD, 12));
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setOpaque(false); // Transparent to show the gradient
+        buttonPanel.setOpaque(false);
         buttonPanel.add(btnLogin);
         buttonPanel.add(btnCancel);
 
@@ -80,16 +78,13 @@ public class LoginPanel extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         loginForm.add(buttonPanel, gbc);
 
-        mainPanel.add(loginForm, BorderLayout.CENTER);
+        loginPanel.add(loginForm, BorderLayout.CENTER);
 
-        // Add the main panel to the frame
-        add(mainPanel);
+        add(loginPanel);
 
-        // Add button actions
         btnLogin.addActionListener(e -> {
             String username = usernameField.getText();
             char[] password = passwordField.getPassword();
-            // Perform login logic here
             JOptionPane.showMessageDialog(this, "Login Attempted for User: " + username);
         });
 
@@ -109,10 +104,9 @@ public class LoginPanel extends JFrame {
             int width = getWidth();
             int height = getHeight();
 
-            // Create a gradient paint from blue to cyan
             GradientPaint gradient = new GradientPaint(
-                    0, 0, new Color(203, 166, 247), // Start color (Steel Blue)
-                    0, height, new Color(0, 206, 209) // End color (Dark Turquoise)
+                    0, 0, new Color(203, 166, 247),
+                    0, height, new Color(0, 206, 209)
             );
 
             g2d.setPaint(gradient);
