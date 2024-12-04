@@ -1,24 +1,57 @@
 package view;
 
-import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import view.other.BookPage;
+import view.other.ReaderPage;
+import view.other.RentalPage;
+import view.other.dashboard.Dashboard;
+import view.other.dashboard.DashboardItem;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainPanel extends JPanel {
+    private static ContentPanel contentPanel;
+
     public MainPanel() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        Dashboard dashboard = new Dashboard();
-        JPanel contentPanel = new JPanel();
-
-        mainPanel.add(dashboard, BorderLayout.WEST);
-        mainPanel.add(contentPanel, BorderLayout.EAST);
+        Dashboard dashboard = new Dashboard("Username", "Admin");
+        contentPanel = new ContentPanel();
         JLabel titleLabel = new JLabel("Library Management");
-        add(titleLabel, BorderLayout.NORTH);
-        add(mainPanel);
+        contentPanel.add(titleLabel, BorderLayout.NORTH);
+
+        // Add dashboard and content panellll
+        setLayout(new BorderLayout());
+        add(contentPanel, BorderLayout.CENTER);
+        add(dashboard, BorderLayout.WEST);
     }
+
+    public static void toPage(String pageName) {
+        // Check the current opened item
+        if (! (Dashboard.getCurrentItem().getButtonName().equals(pageName))) {
+            contentPanel.getCardLayout().show(contentPanel, pageName);
+        }
+    }
+
+    private static class ContentPanel extends JPanel {
+        private CardLayout cardLayout;
+
+        public ContentPanel() {
+            cardLayout = new CardLayout();
+            setLayout(cardLayout);
+            cardLayout.show(this, "Book Page");     // default page
+
+            // Pages must have the same name as the associated buttons
+            BookPage bookPage = new BookPage();
+            add(bookPage, "Books");
+            ReaderPage readerPage = new ReaderPage();
+            add(readerPage, "Readers");
+            RentalPage rentalPage = new RentalPage();
+            add(rentalPage, "Rents");
+        }
+
+        public CardLayout getCardLayout() {
+            return cardLayout;
+        }
+    }
+
+
 }

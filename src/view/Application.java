@@ -7,8 +7,6 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import raven.toast.Notifications;
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -20,7 +18,7 @@ public class Application extends JFrame {
     private final LoginPanel loginPanel;
     private final MainPanel mainPanel;
     private static Application app;
-    Image img = Toolkit.getDefaultToolkit().getImage("LibraryManagement/assets/cover.png");
+    Image img = Toolkit.getDefaultToolkit().getImage("LibraryManagement/assets/banner.png");
 
     public Application() {
         setLayout(new CardLayout());
@@ -34,14 +32,14 @@ public class Application extends JFrame {
         };
         setContentPane(loginPanel);
         getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
-        Notifications.getInstance().setJFrame(this);
     }
 
     public static void toMainPanel() {
         FlatAnimatedLafChange.showSnapshot();
         app.setContentPane(app.mainPanel);
+        app.mainPanel.applyComponentOrientation(app.getComponentOrientation());
+        SwingUtilities.updateComponentTreeUI(app.mainPanel);
         FlatAnimatedLafChange.hideSnapshotWithAnimation();
-        app.mainPanel.setVisible(true);
     }
 
     public static void main(String[] args) {

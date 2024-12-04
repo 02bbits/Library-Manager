@@ -40,7 +40,7 @@ public class LoginPanel extends JPanel {
         gbc.insets = new Insets(10, 10, 20, 10);
 
         // ============= Username label
-        JLabel usernameLabel = new JLabel(new ImageIcon("LibraryManagement/assets/userIcon.png"));
+        JLabel usernameLabel = new JLabel(new ImageIcon("LibraryManagement/assets/icons/userIcon.png"));
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
@@ -48,7 +48,7 @@ public class LoginPanel extends JPanel {
         loginForm.add(usernameLabel, gbc);
 
         // ============= Password label
-        JLabel passwordLabel = new JLabel(new ImageIcon("LibraryManagement/assets/passwordIcon.png"));
+        JLabel passwordLabel = new JLabel(new ImageIcon("LibraryManagement/assets/icons/passwordIcon.png"));
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.EAST;
@@ -72,12 +72,11 @@ public class LoginPanel extends JPanel {
         // ============= Password field
         JPasswordField passwordField = new JPasswordField(15);
         passwordField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Password");
-        passwordField.putClientProperty(FlatClientProperties.STYLE,
-                "showRevealButton:true; showCapsLock:true");
+        passwordField.putClientProperty(FlatClientProperties.STYLE, ""
+                + "showRevealButton:true;"
+                + "showCapsLock:true;"
+                + "placeholderForeground:#a1a1a1");
         passwordField.setBackground(Color.WHITE);
-        passwordField.putClientProperty(
-                FlatClientProperties.STYLE, "placeholderForeground:#a1a1a1"
-        );
 
         gbc.gridx = 1;
         gbc.gridy = 3;
