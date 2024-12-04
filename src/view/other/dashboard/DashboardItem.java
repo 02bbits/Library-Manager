@@ -11,6 +11,7 @@ public class DashboardItem extends JButton {
     private final ImageIcon icon;
     private final ImageIcon highlightedIcon;
     private final String buttonName;
+    private final Color defaultColor = new Color(0, 29, 61);
 
     public DashboardItem(String name, ImageIcon icon, ImageIcon highlightedIcon) {
         super("    " + name);
@@ -19,7 +20,7 @@ public class DashboardItem extends JButton {
         this.icon = icon;
         setIcon(icon);
         setForeground(Color.WHITE);
-        setBackground(new Color(0, 0, 60));
+        setBackground(defaultColor);
         setOpaque(false);
         putClientProperty(FlatClientProperties.STYLE, "arc:25");
         setMaximumSize(new Dimension(300, 50));
@@ -49,7 +50,7 @@ public class DashboardItem extends JButton {
 
     public void changeState() {
         isOpen = !isOpen;
-        setBackground(isOpen ? new Color(227, 142, 73) : new Color(0, 0, 60));
+        setBackground(isOpen ? new Color(227, 142, 73) : defaultColor);
         setForeground(isOpen ? Color.BLACK : Color.WHITE);
         setIcon(isOpen ? highlightedIcon : icon);
     }

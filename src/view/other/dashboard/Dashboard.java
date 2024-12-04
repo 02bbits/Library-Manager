@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import view.MainPanel;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -26,9 +27,9 @@ public class Dashboard extends JPanel {
         currentItem = items.getFirst();     // default current item
 
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(280, 600));
+        setPreferredSize(new Dimension(280, 800));
         setOpaque(true);
-        setBackground(new Color(0, 0, 60));
+        setBackground(new Color(0, 29, 61));
 
         add(header, BorderLayout.NORTH);
         add(sidebar, BorderLayout.CENTER);
@@ -65,9 +66,8 @@ public class Dashboard extends JPanel {
         JLabel avatar = new JLabel(new ImageIcon(PATH + "avatar.png"));
         avatar.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
         header.add(avatar, BorderLayout.WEST);
-
-        header.setOpaque(false);
-
+        header.setOpaque(true);
+        header.setBackground(new Color(0, 53, 102));
     }
 
     private void initSidebar() {
@@ -95,6 +95,7 @@ public class Dashboard extends JPanel {
         barTitle3.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
         barTitle3.setForeground(Color.WHITE);
 
+        addMargin(10);
         sidebar.add(barTitle3);
         addButton("Dashboard", new ImageIcon(PATH + "dashboard.png"), new ImageIcon(PATH + "highlighted-dashboard.png"));
         addMargin(25);
