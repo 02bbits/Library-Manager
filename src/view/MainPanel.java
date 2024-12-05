@@ -1,15 +1,13 @@
 package view;
 
-import view.other.BookPage;
-import view.other.DashboardPage;
-import view.other.ReaderPage;
-import view.other.RentalPage;
+import view.other.TableForm.BookPage;
+import view.other.TableForm.DashboardPage;
+import view.other.TableForm.ReaderPage;
+import view.other.TableForm.RentalPage;
 import view.other.dashboard.Dashboard;
-import view.other.dashboard.DashboardItem;
 import view.other.dashboard.MessagePage;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class MainPanel extends JPanel {

@@ -1,4 +1,4 @@
-package view.other;
+package view.other.TableForm;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import view.other.Graph.GraphBar;

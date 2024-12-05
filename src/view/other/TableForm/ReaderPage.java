@@ -1,4 +1,4 @@
-package view.other;
+package view.other.TableForm;
 
 import javax.swing.*;
 
