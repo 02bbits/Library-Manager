@@ -29,7 +29,7 @@ public class Dashboard extends JPanel {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(280, 800));
         setOpaque(true);
-        setBackground(new Color(0, 29, 61));
+        setBackground(new Color(0, 0, 60));
 
         add(header, BorderLayout.NORTH);
         add(sidebar, BorderLayout.CENTER);
@@ -67,7 +67,7 @@ public class Dashboard extends JPanel {
         avatar.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
         header.add(avatar, BorderLayout.WEST);
         header.setOpaque(true);
-        header.setBackground(new Color(0, 53, 102));
+        header.setBackground(new Color(50, 50, 110));
     }
 
     private void initSidebar() {
@@ -103,7 +103,7 @@ public class Dashboard extends JPanel {
         sidebar.add(barTitle);
         addButton("Books", new ImageIcon(PATH + "book.png"), new ImageIcon(PATH + "highlighted-book.png"));
         addButton("Readers", new ImageIcon(PATH + "users.png"), new ImageIcon(PATH + "highlighted-users.png"));
-        addButton("Rents", new ImageIcon(PATH + "rent.png"), new ImageIcon(PATH + "highlighted-rent.png"));
+        addButton("Rents", new ImageIcon(PATH + "highlighted-rent.png"), new ImageIcon(PATH + "rent.png"));
         addMargin(25);
 
         sidebar.add(barTitle2);

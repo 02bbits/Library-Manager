@@ -9,6 +9,7 @@ import view.other.dashboard.DashboardItem;
 import view.other.dashboard.MessagePage;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class MainPanel extends JPanel {
@@ -17,8 +18,6 @@ public class MainPanel extends JPanel {
     public MainPanel() {
         Dashboard dashboard = new Dashboard("Username", "Admin");
         contentPanel = new ContentPanel();
-        JLabel titleLabel = new JLabel("Library Management");
-        contentPanel.add(titleLabel, BorderLayout.NORTH);
 
         // Add dashboard and content panellll
         setLayout(new BorderLayout());

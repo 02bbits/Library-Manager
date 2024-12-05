@@ -11,7 +11,7 @@ public class DashboardItem extends JButton {
     private final ImageIcon icon;
     private final ImageIcon highlightedIcon;
     private final String buttonName;
-    private final Color defaultColor = new Color(0, 29, 61);
+    private final Color defaultColor = new Color(0, 0, 60);
 
     public DashboardItem(String name, ImageIcon icon, ImageIcon highlightedIcon) {
         super("    " + name);
@@ -23,6 +23,7 @@ public class DashboardItem extends JButton {
         setBackground(defaultColor);
         setOpaque(false);
         putClientProperty(FlatClientProperties.STYLE, "arc:25");
+        putClientProperty(FlatClientProperties.STYLE, "font:$dashboard-button.font");
         setMaximumSize(new Dimension(300, 50));
         setHorizontalAlignment(SwingConstants.LEFT);
         setMargin(new Insets(0,15,0,0));
