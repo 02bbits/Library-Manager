@@ -1,6 +1,5 @@
-package view.other;
+package view.other.CustomComponent;
 
-import javax.swing.*;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -37,6 +36,7 @@ public class CustomTextField extends JTextField {
     public void setSuffixIcon(Icon suffixIcon) {
         this.suffixIcon = suffixIcon;
         initBorder();
+        repaint();
     }
 
     private Icon prefixIcon;
@@ -55,8 +55,8 @@ public class CustomTextField extends JTextField {
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(new Color(230, 240, 247));
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 5, 5);
+        g2.setColor(Color.WHITE);
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
         paintIcon(g);
         super.paintComponent(g);
     }
@@ -74,7 +74,7 @@ public class CustomTextField extends JTextField {
         }
     }
 
-    private void paintIcon(Graphics g) {
+    protected void paintIcon(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         if (prefixIcon != null) {
             Image prefix = ((ImageIcon) prefixIcon).getImage();

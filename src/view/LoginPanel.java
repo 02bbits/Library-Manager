@@ -3,8 +3,8 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 import com.formdev.flatlaf.FlatClientProperties;
-import view.other.CustomPasswordField;
-import view.other.CustomTextField;
+import view.other.CustomComponent.CustomPasswordField;
+import view.other.CustomComponent.CustomTextField;
 
 public class LoginPanel extends JPanel {
 
@@ -60,16 +60,19 @@ public class LoginPanel extends JPanel {
         CustomTextField usernameField = new CustomTextField();
         usernameField.setPrefixIcon(new ImageIcon("LibraryManagement/assets/icons/userIcon.png"));
         usernameField.setHint("Username");
+        usernameField.setPreferredSize(new Dimension(800, 50));
+        usernameField.setSize(usernameField.getPreferredSize());
 //        usernameField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "User Name");
 //        usernameField.setBackground(Color.WHITE);
 //        usernameField.putClientProperty(
 //                FlatClientProperties.STYLE, "placeholderForeground:#a1a1a1"
 //        );
 
-        gbc.gridx = 1;
+        gbc.gridx = 0;
         gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.WEST;
+//        gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 4;
         gbc.weightx = 1.0;
         loginForm.add(usernameField, gbc);
 
