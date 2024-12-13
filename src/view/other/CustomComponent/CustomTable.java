@@ -1,14 +1,10 @@
 package view.other.CustomComponent;
 
-import com.formdev.flatlaf.FlatClientProperties;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.util.Vector;
 
 public class CustomTable extends JTable {
     public CustomTable(TableModel model) {

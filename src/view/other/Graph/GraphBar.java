@@ -1,19 +1,13 @@
 package view.other.Graph;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.FlatLaf;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class GraphBar extends JPanel {
-    private final int height;
-    private final int width;
 
     public GraphBar(int height, int width, String text) {
-        this.height = height;
-        this.width = width;
 
         JLabel bar = new JLabel(" ") {
             @Override

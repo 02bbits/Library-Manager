@@ -4,7 +4,6 @@ import com.formdev.flatlaf.FlatClientProperties;
 import view.MainPanel;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -96,20 +95,17 @@ public class Dashboard extends JLayeredPane {
         sidebar.setOpaque(false);
         sidebar.setBorder(BorderFactory.createEmptyBorder(10,15,10,10));
         JLabel barTitle = new JLabel("    TABLES");
-        barTitle.putClientProperty(FlatClientProperties.STYLE, ""
-                + "font:$Menu.label.font;");
+        barTitle.putClientProperty(FlatClientProperties.STYLE, "font:$Menu.label.font;");
         barTitle.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
         barTitle.setForeground(Color.WHITE);
 
         JLabel barTitle2 = new JLabel("    OTHER");
-        barTitle2.putClientProperty(FlatClientProperties.STYLE, ""
-                + "font:$Menu.label.font;");
+        barTitle2.putClientProperty(FlatClientProperties.STYLE, "font:$Menu.label.font;");
         barTitle2.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
         barTitle2.setForeground(Color.WHITE);
 
         JLabel barTitle3 = new JLabel("    MAIN");
-        barTitle3.putClientProperty(FlatClientProperties.STYLE, ""
-                + "font:$Menu.label.font;");
+        barTitle3.putClientProperty(FlatClientProperties.STYLE, "font:$Menu.label.font;");
         barTitle3.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
         barTitle3.setForeground(Color.WHITE);
 
@@ -140,11 +136,10 @@ public class Dashboard extends JLayeredPane {
         return items;
     }
 
-    private JButton addButton(String name, ImageIcon icon, ImageIcon highlightedIcon) {
+    private void addButton(String name, ImageIcon icon, ImageIcon highlightedIcon) {
         DashboardItem dashboardItem = new DashboardItem(name, icon, highlightedIcon);
         sidebar.add(dashboardItem);
         items.add(dashboardItem);
-        return dashboardItem;
     }
 
     private void addMargin(int height) {

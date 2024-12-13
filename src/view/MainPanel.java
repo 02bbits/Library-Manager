@@ -34,7 +34,7 @@ public class MainPanel extends JPanel {
     }
 
     private static class ContentPanel extends JPanel {
-        private CardLayout cardLayout;
+        private final CardLayout cardLayout;
 
         public ContentPanel() {
             cardLayout = new CardLayout();

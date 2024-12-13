@@ -94,8 +94,8 @@ public class DashboardPage extends JPanel {
     }
 
     private static class TotalInfo extends JPanel {
-        private Color color1;
-        private Color color2;
+        private final Color color1;
+        private final Color color2;
         private int value;
 
         public TotalInfo(String title, int value, ImageIcon icon, Color color1, Color color2) {

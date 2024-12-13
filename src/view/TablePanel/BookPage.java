@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Objects;
 
 public class BookPage extends JPanel {
     private JPanel searchPanel;
@@ -48,7 +49,7 @@ public class BookPage extends JPanel {
                 g2.fillRect(getWidth() / 2 - 10, 0, getWidth(), getHeight());
 
                 g2.setColor(Color.WHITE);
-                g2.drawString(getSelectedItem().toString().substring(0, 17) + "..", 20, 27);
+                g2.drawString(Objects.requireNonNull(getSelectedItem()).toString().substring(0, 17) + "..", 20, 27);
             }
         };
 
