@@ -25,8 +25,8 @@ public class GraphBar extends JPanel {
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
                 GradientPaint gradient = new GradientPaint(
-                        0, 0, new Color(247, 162, 93),
-                        width, height, new Color(227, 142, 73)
+                        0, 0, new Color(253, 175, 74),
+                        width, height, new Color(247, 165, 64)
                 );
 
                 g2d.setPaint(gradient);

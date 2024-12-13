@@ -1,11 +1,11 @@
 package view;
 
-import view.other.TableForm.BookPage;
-import view.other.TableForm.DashboardPage;
-import view.other.TableForm.ReaderPage;
-import view.other.TableForm.RentalPage;
+import view.MessagePanel.MainMessagePage;
+import view.TablePanel.BookPage;
+import view.TablePanel.DashboardPage;
+import view.TablePanel.ReaderPage;
+import view.TablePanel.RentalPage;
 import view.other.dashboard.Dashboard;
-import view.other.dashboard.MessagePage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,12 +15,15 @@ public class MainPanel extends JPanel {
 
     public MainPanel() {
         Dashboard dashboard = new Dashboard("Username", "Admin");
+        JPanel dashboardPanel = new JPanel(new BorderLayout());
+        dashboardPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        dashboardPanel.add(dashboard, BorderLayout.CENTER);
         contentPanel = new ContentPanel();
 
         // Add dashboard and content panellll
         setLayout(new BorderLayout());
         add(contentPanel, BorderLayout.CENTER);
-        add(dashboard, BorderLayout.WEST);
+        add(dashboardPanel, BorderLayout.WEST);
     }
 
     public static void toPage(String pageName) {
@@ -47,7 +50,7 @@ public class MainPanel extends JPanel {
             add(readerPage, "Readers");
             RentalPage rentalPage = new RentalPage();
             add(rentalPage, "Rents");
-            MessagePage messagePage = new MessagePage();
+            MainMessagePage messagePage = new MainMessagePage();
             add(messagePage, "Messages");
         }
 
