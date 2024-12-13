@@ -1,4 +1,4 @@
-package view.other.TableForm;
+package view.TablePanel;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import view.other.Graph.GraphBar;
@@ -50,6 +50,7 @@ public class DashboardPage extends JPanel {
 
         JButton reloadButton = new JButton(new ImageIcon(PATH + "reload.png"));
         reloadButton.setMaximumSize(new Dimension(30, 30));
+        reloadButton.setFocusPainted(false);
         reloadButton.setBackground(Color.WHITE);
         reloadButton.setMargin(new Insets(15, 15, 0, 0));
         reloadButton.addActionListener(new java.awt.event.ActionListener() {

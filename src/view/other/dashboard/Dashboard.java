@@ -8,7 +8,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Dashboard extends JPanel {
+public class Dashboard extends JLayeredPane {
     private JPanel header;
     private JPanel sidebar;
     private JPanel footer;
@@ -28,12 +28,22 @@ public class Dashboard extends JPanel {
 
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(280, 800));
-        setOpaque(true);
+        setOpaque(false);
         setBackground(new Color(0, 0, 60));
 
         add(header, BorderLayout.NORTH);
         add(sidebar, BorderLayout.CENTER);
 //        add(footer);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getBackground());
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
     }
 
     private void initHeader() {
@@ -45,12 +55,12 @@ public class Dashboard extends JPanel {
 
         JLabel username = new JLabel(this.username);
         username.setForeground(Color.WHITE);
-        username.setFont(new Font("Arial", Font.BOLD, 15));
+        username.setFont(new Font("Inter", Font.BOLD, 15));
         username.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
 
         JLabel role = new JLabel(this.role);
         role.setForeground(Color.WHITE);
-        role.setFont(new Font("Arial", Font.PLAIN, 12));
+        role.setFont(new Font("Inter", Font.PLAIN, 12));
 
         username.setAlignmentX(Component.LEFT_ALIGNMENT);
         role.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -59,15 +69,23 @@ public class Dashboard extends JPanel {
         infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         infoPanel.add(role);
 
-        header = new JPanel(new BorderLayout());
+        header = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(50, 50, 110));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
+                super.paintComponent(g);
+            }
+        };
         header.setPreferredSize(new Dimension(300, 120));
         header.add(infoPanel, BorderLayout.EAST);
 
         JLabel avatar = new JLabel(new ImageIcon(PATH + "avatar.png"));
         avatar.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
         header.add(avatar, BorderLayout.WEST);
-        header.setOpaque(true);
-        header.setBackground(new Color(50, 50, 110));
+        header.setOpaque(false);
     }
 
     private void initSidebar() {

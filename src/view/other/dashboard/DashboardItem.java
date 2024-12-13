@@ -22,11 +22,12 @@ public class DashboardItem extends JButton {
         setForeground(Color.WHITE);
         setBackground(defaultColor);
         setOpaque(false);
-        putClientProperty(FlatClientProperties.STYLE, "arc:25");
+        putClientProperty(FlatClientProperties.STYLE, "arc:35");
         putClientProperty(FlatClientProperties.STYLE, "font:$dashboard-button.font");
         setMaximumSize(new Dimension(300, 50));
         setHorizontalAlignment(SwingConstants.LEFT);
         setMargin(new Insets(0,15,0,0));
+        setFocusPainted(false);
 
         addActionListener(new java.awt.event.ActionListener() {
             @Override
