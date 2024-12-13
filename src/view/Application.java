@@ -53,8 +53,11 @@ public class Application extends JFrame {
 
         java.awt.EventQueue.invokeLater(() -> {
             app = new Application();
+            app.setTitle("Library Management System");
             app.setVisible(true);
             app.setSize(new Dimension(1400, 800));
+            app.setMaximumSize(new Dimension(1920, 1080));
+            app.setResizable(false);
             app.setLocationRelativeTo(null);
             app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         });
