@@ -13,15 +13,14 @@ import javax.swing.UIManager;
 
 
 public class Application extends JFrame {
-    private final LoginPanel loginPanel;
-    private final MainPanel mainPanel;
+    private LoginPanel loginPanel;
+    private MainPanel mainPanel;
     private static Application app;
     Image img = Toolkit.getDefaultToolkit().getImage("LibraryManagement/assets/banner.png");
 
     public Application() {
         setLayout(new CardLayout());
 
-        mainPanel = new MainPanel();
         loginPanel = new LoginPanel() {
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -32,7 +31,9 @@ public class Application extends JFrame {
         getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
     }
 
-    public static void toMainPanel() {
+    public static void toMainPanel(String username, String role) {
+        app.mainPanel = new MainPanel(username, role);
+
         FlatAnimatedLafChange.showSnapshot();
         app.setContentPane(app.mainPanel);
         app.mainPanel.applyComponentOrientation(app.getComponentOrientation());

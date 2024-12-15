@@ -1,6 +1,9 @@
 package view.TablePanel;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import controller.BookController;
+import util.FormatUtil;
+import util.TableUtil;
 import view.other.CustomComponent.CustomTable;
 import view.other.CustomComponent.CustomTextField;
 
@@ -13,6 +16,10 @@ import java.util.Objects;
 public class BookPage extends JPanel {
     private JPanel searchPanel;
     private JPanel tablePanel;
+    private JPanel buttonPanel;
+    JTable table;
+    DefaultTableModel model;
+    private final BookController bookController = new BookController();
     private final String PATH = "LibraryManagement/assets/icons/";
 
     public BookPage() {
@@ -21,8 +28,11 @@ public class BookPage extends JPanel {
 
         initSearchPanel();
         initTablePanel();
+        initButtonPanel();
+
         add(searchPanel, BorderLayout.NORTH);
         add(tablePanel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private void initSearchPanel() {
@@ -72,36 +82,179 @@ public class BookPage extends JPanel {
         marginPanel.setBorder(new EmptyBorder(5,15,10,15));
         marginPanel.setOpaque(false);
 
-        // Sample data
-        String[] headers = {"ID", "Title", "Author", "Publisher", "Publication Date", "Genre"};
-        String[][] data = {
-                {"1", "The Great Gatsby", "F. Scott Fitzgerald", "Scribner", "1925-04-10", "Novel"},
-                {"2", "To Kill a Mockingbird", "Harper Lee", "J.B. Lippincott & Co.", "1960-07-11", "Fiction"},
-                {"3", "1984", "George Orwell", "Secker & Warburg", "1949-06-08", "Dystopian"},
-                {"4", "Pride and Prejudice", "Jane Austen", "T. Egerton", "1813-01-28", "Romance"},
-                {"5", "The Catcher in the Rye", "J.D. Salinger", "Little, Brown and Company", "1951-07-16", "Fiction"},
-                {"6", "Moby-Dick", "Herman Melville", "Harper & Brothers", "1851-10-18", "Adventure"},
-                {"7", "The Hobbit", "J.R.R. Tolkien", "George Allen & Unwin", "1937-09-21", "Fantasy"},
-                {"8", "Fahrenheit 451", "Ray Bradbury", "Ballantine Books", "1953-10-19", "Dystopian"},
-                {"9", "Jane Eyre", "Charlotte Brontë", "Smith, Elder & Co.", "1847-10-16", "Gothic Fiction"},
-                {"10", "The Lord of the Rings", "J.R.R. Tolkien", "George Allen & Unwin", "1954-07-29", "Fantasy"},
-                {"11", "Animal Farm", "George Orwell", "Secker & Warburg", "1945-08-17", "Satire"},
-                {"12", "Brave New World", "Aldous Huxley", "Chatto & Windus", "1932-08-18", "Dystopian"},
-                {"13", "Wuthering Heights", "Emily Brontë", "Thomas Cautley Newby", "1847-12-01", "Gothic Fiction"},
-                {"14", "Crime and Punishment", "Fyodor Dostoevsky", "The Russian Messenger", "1866-01-01", "Psychological Fiction"},
-                {"15", "Great Expectations", "Charles Dickens", "Chapman & Hall", "1861-08-01", "Novel"},
-                {"16", "The Alchemist", "Paulo Coelho", "HarperTorch", "1988-04-01", "Adventure"},
-                {"17", "Frankenstein", "Mary Shelley", "Lackington, Hughes, Harding, Mavor & Jones", "1818-01-01", "Horror"},
-                {"18", "Les Misérables", "Victor Hugo", "A. Lacroix, Verboeckhoven & Cie", "1862-04-03", "Historical Fiction"},
-                {"19", "Dracula", "Bram Stoker", "Archibald Constable and Company", "1897-05-26", "Horror"},
-                {"20", "War and Peace", "Leo Tolstoy", "The Russian Messenger", "1869-01-01", "Historical Fiction"},
-        };
-        DefaultTableModel model = new DefaultTableModel(data, headers);
+        BookController bookController = new BookController();
+        model = TableUtil.booksToTableModel(bookController.getBooks());
 
-        CustomTable table = new CustomTable(model);
+        table = new CustomTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
         marginPanel.add(scrollPane, BorderLayout.CENTER);
 
         tablePanel.add(marginPanel, BorderLayout.CENTER);
+    }
+
+    private void initButtonPanel() {
+        buttonPanel = new JPanel(new GridLayout(1,0));
+        buttonPanel.setPreferredSize(new Dimension(1000,50));
+
+        // Edit Button
+        JButton editButton = new JButton("Edit Row");
+        editButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+
+            if (selectedRow != -1) {
+                Object rawId = table.getValueAt(selectedRow, 0);
+                Integer id = Integer.valueOf(rawId.toString());
+                Object title = table.getValueAt(selectedRow, 1);
+                Object author = table.getValueAt(selectedRow, 2);
+                Object publisher = table.getValueAt(selectedRow, 3);
+                Object genres = table.getValueAt(selectedRow, 4);
+                Object publicationDate = table.getValueAt(selectedRow, 5);
+                Object status = table.getValueAt(selectedRow, 6);
+
+                CustomTextField titleField = new CustomTextField();
+                titleField.setText(title.toString());
+                CustomTextField authorField = new CustomTextField();
+                authorField.setText(author.toString());
+                CustomTextField publisherField = new CustomTextField();
+                publisherField.setText(publisher.toString());
+                CustomTextField genresField = new CustomTextField();
+                genresField.setText(genres.toString());
+                CustomTextField publicationDateField = new CustomTextField();
+                publicationDateField.setText(publicationDate.toString());
+                JComboBox<String> statusField = new JComboBox<>(new String[]{"AVAILABLE", "UNAVAILABLE"});
+                statusField.setSelectedItem(status);
+                statusField.setBackground(Color.WHITE);
+                statusField.setForeground(Color.BLACK);
+
+                JPanel editPanel = new JPanel(new GridLayout(0, 1, 10, 0));
+                editPanel.add(new JLabel("Title:"));
+                editPanel.add(titleField);
+                editPanel.add(new JLabel("Author:"));
+                editPanel.add(authorField);
+                editPanel.add(new JLabel("Publisher:"));
+                editPanel.add(publisherField);
+                editPanel.add(new JLabel("Genres:"));
+                editPanel.add(genresField);
+                editPanel.add(new JLabel("Publication Date:"));
+                editPanel.add(publicationDateField);
+                editPanel.add(new JLabel("Status"));
+                editPanel.add(statusField);
+
+                int result = JOptionPane.showConfirmDialog(null, editPanel, "Edit Row",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                boolean fieldsAreBlank = titleField.getText().isEmpty() || authorField.getText().isEmpty() || publisherField.getText().isEmpty() || genresField.getText().isEmpty() || publicationDateField.getText().isEmpty();
+
+                if (result == JOptionPane.OK_OPTION) {
+                    if (fieldsAreBlank) {
+                        JOptionPane.showMessageDialog(null, "No row selected!", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (!FormatUtil.isValidDate(publicationDateField.getText())) {
+                        JOptionPane.showMessageDialog(null, "Invalid date format!\nDates must follow this format: YYYY-DD-MM", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        table.setValueAt(titleField.getText(), selectedRow, 1);
+                        table.setValueAt(authorField.getText(), selectedRow, 2);
+                        table.setValueAt(publisherField.getText(), selectedRow, 3);
+                        table.setValueAt(genresField.getText(), selectedRow, 4);
+                        table.setValueAt(publicationDateField.getText(), selectedRow, 5);
+                        table.setValueAt(statusField.getSelectedItem(), selectedRow, 6);
+                        bookController.updateBook(id, titleField.getText(), authorField.getText(), publisherField.getText(), genresField.getText(), publicationDateField.getText(), Objects.requireNonNull(statusField.getSelectedItem()).toString());
+                        JOptionPane.showMessageDialog(null, "Row updated successfully!");
+                    }
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(null, "No row selected!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Add Button
+        JButton addButton = new JButton("Add Row");
+        addButton.addActionListener(e -> {
+            CustomTextField titleField = new CustomTextField();
+            CustomTextField authorField = new CustomTextField();
+            CustomTextField publisherField = new CustomTextField();
+            CustomTextField genresField = new CustomTextField();
+            CustomTextField publicationDateField = new CustomTextField();
+            JComboBox<String> statusField = new JComboBox<>(new String[]{"AVAILABLE", "UNAVAILABLE"});
+            statusField.setBackground(Color.WHITE);
+            statusField.setForeground(Color.BLACK);
+
+            JPanel editPanel = new JPanel(new GridLayout(0, 1, 0, 0));
+            editPanel.add(new JLabel("Title:"));
+            editPanel.add(titleField);
+            editPanel.add(new JLabel("Author:"));
+            editPanel.add(authorField);
+            editPanel.add(new JLabel("Publisher:"));
+            editPanel.add(publisherField);
+            editPanel.add(new JLabel("Genres:"));
+            editPanel.add(genresField);
+            editPanel.add(new JLabel("Publication Date:"));
+            editPanel.add(publicationDateField);
+            editPanel.add(new JLabel("Status"));
+            editPanel.add(statusField);
+
+            int result = JOptionPane.showConfirmDialog(null, editPanel, "Add Row",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            boolean fieldsAreBlank = titleField.getText().isEmpty() || authorField.getText().isEmpty() || publisherField.getText().isEmpty() || genresField.getText().isEmpty() || publicationDateField.getText().isEmpty();
+
+            if (result == JOptionPane.OK_OPTION) {
+                if (fieldsAreBlank) {
+                    JOptionPane.showMessageDialog(null, "Fields cannot be left empty");
+                }
+
+                else if (!FormatUtil.isValidDate(publicationDateField.getText())) {
+                    JOptionPane.showMessageDialog(null, "Invalid date format!\nDates must follow this format: YYYY-DD-MM", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+                else if (!FormatUtil.isValidGenresField(genresField.getText())) {
+                    JOptionPane.showMessageDialog(null, "Invalid genres field!\nInput must follow this format: <genre>, <genre>,..", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+                else {
+                    model.addRow(new Object[]{bookController.getLatestID() + 1, titleField.getText(), authorField.getText(), publisherField.getText(), genresField.getText(), publicationDateField.getText(), Objects.requireNonNull(statusField.getSelectedItem()).toString()});
+                    JOptionPane.showMessageDialog(null, "Row added successfully!");
+                    bookController.addBook(titleField.getText(), authorField.getText(), publisherField.getText(), genresField.getText(), publicationDateField.getText(), Objects.requireNonNull(statusField.getSelectedItem()).toString());
+                }
+            }
+        });
+
+        // Delete Button
+        JButton deleteButton = new JButton("Delete Row");
+        deleteButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow != -1) {
+                Object tableValue = table.getValueAt(selectedRow, 0);
+                int id = Integer.parseInt(tableValue.toString());
+
+                int result = JOptionPane.showConfirmDialog(null, "\tThis action cannot be undone","Delete row?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                if (result == JOptionPane.OK_OPTION) {
+                    model.removeRow(selectedRow);
+                    bookController.deleteBook(id);
+                    JOptionPane.showMessageDialog(null, "Row removed successfully!");
+                }
+            }
+
+            else {
+                JOptionPane.showMessageDialog(null, "No row selected!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Button styles
+        addButton.setBackground(new Color(227, 142, 73));
+        addButton.setForeground(Color.WHITE);
+        addButton.putClientProperty(FlatClientProperties.STYLE, "font:bold -1");
+
+        editButton.setBackground(new Color(227, 142, 73));
+        editButton.setForeground(Color.WHITE);
+        editButton.putClientProperty(FlatClientProperties.STYLE, "font:bold -1");
+
+        deleteButton.setBackground(new Color(227, 142, 73));
+        deleteButton.setForeground(Color.WHITE);
+        deleteButton.putClientProperty(FlatClientProperties.STYLE, "font:bold -1");
+
+        buttonPanel.add(addButton);
+        buttonPanel.add(editButton);
+        buttonPanel.add(deleteButton);
     }
 }
