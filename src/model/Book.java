@@ -1,24 +1,27 @@
 package model;
 
-import util.BookStatus;
+import controller.BookController;
+
+import java.util.ArrayList;
 
 public class Book {
     private int id;
-    private String name;
+    private String title;
     private String author;
     private String publisher;
-    private int status = BookStatus.AVAILABLE;
+    private String publicationDate;
+    private String status;
 
     public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getAuthor() {
@@ -37,26 +40,28 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
    }
 
-    public Book(int id, String name, String author, String publisher, int status) {
-        this.id = id;
-        this.name = name;
-        this.author = author;
-        this.publisher = publisher;
-        this.status = status;
+    public String getPublicationDate() {
+        return publicationDate;
     }
 
-    public Book(String name, String author, String publisher, int status) {
-        this.name = name;
+    public void setPublicationDate(String publicationDate) {
+        this.publicationDate = publicationDate;
+    }
+
+    public Book(int id, String title, String author, String publisher, String publicationDate, String status) {
+        this.id = id;
+        this.title = title;
         this.author = author;
         this.publisher = publisher;
+        this.publicationDate = publicationDate;
         this.status = status;
     }
 }
