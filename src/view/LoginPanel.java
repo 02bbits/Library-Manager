@@ -2,7 +2,10 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+
 import com.formdev.flatlaf.FlatClientProperties;
+import controller.UserController;
 import view.other.CustomComponent.CustomPasswordField;
 import view.other.CustomComponent.CustomTextField;
 
@@ -41,32 +44,12 @@ public class LoginPanel extends JPanel {
         loginForm.add(titleLabel2, gbc);
         gbc.insets = new Insets(10, 10, 20, 10);
 
-        // ============= Username label
-//        JLabel usernameLabel = new JLabel(new ImageIcon("LibraryManagement/assets/icons/userIcon.png"));
-//        gbc.gridx = 0;
-//        gbc.gridy = 2;
-//        gbc.gridwidth = 1;
-//        gbc.anchor = GridBagConstraints.EAST;
-//        loginForm.add(usernameLabel, gbc);
-
-        // ============= Password label
-//        JLabel passwordLabel = new JLabel(new ImageIcon("LibraryManagement/assets/icons/passwordIcon.png"));
-//        gbc.gridx = 0;
-//        gbc.gridy = 3;
-//        gbc.anchor = GridBagConstraints.EAST;
-//        loginForm.add(passwordLabel, gbc);
-
         // ============= Username field
         CustomTextField usernameField = new CustomTextField();
         usernameField.setPrefixIcon(new ImageIcon("LibraryManagement/assets/icons/userIcon.png"));
         usernameField.setHint("Username");
         usernameField.setPreferredSize(new Dimension(800, 50));
         usernameField.setSize(usernameField.getPreferredSize());
-//        usernameField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "User Name");
-//        usernameField.setBackground(Color.WHITE);
-//        usernameField.putClientProperty(
-//                FlatClientProperties.STYLE, "placeholderForeground:#a1a1a1"
-//        );
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -84,7 +67,6 @@ public class LoginPanel extends JPanel {
                 + "showRevealButton:true;"
                 + "showCapsLock:true;"
                 + "placeholderForeground:#a1a1a1");
-//        passwordField.setBackground(Color.WHITE);
 
         gbc.gridx = 1;
         gbc.gridy = 3;
@@ -116,8 +98,15 @@ public class LoginPanel extends JPanel {
         // ============= Button click action
         btnLogin.addActionListener(e -> {
             String username = usernameField.getText();
-            char[] password = passwordField.getPassword();
-            Application.toMainPanel();
+            String password = String.valueOf(passwordField.getPassword());
+            UserController userController = new UserController();
+            int userID = userController.login(username, password);
+
+            if (userID != 0) {
+                Application.toMainPanel(username, userController.getUser(userID).getRole());
+            } else {
+                JOptionPane.showMessageDialog(this, "Login failed\nInvalid username or password");
+            }
         });
     }
 }
