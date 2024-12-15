@@ -14,6 +14,7 @@ public class CustomTable extends JTable {
         setShowHorizontalLines(true);
         setRowHeight(40);
         setFocusable(false);
+        getColumnModel().getColumn(0).setPreferredWidth(5);
 
         setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -27,7 +28,18 @@ public class CustomTable extends JTable {
                     label.setForeground(Color.white);
                 } else {
                     label.setBackground(Color.white);
-                    label.setForeground(new Color(20,20,20));
+                    label.setForeground(new Color(20, 20, 20));
+
+                    // Set styles for specific values, why do I keep commenting even tho I am the only one who view these codes
+                    if ("AVAILABLE".equals(value)) {
+                        label.setForeground(Color.GREEN);
+                        label.setFont(label.getFont().deriveFont(Font.BOLD, 16));
+                    }
+
+                    else if ("UNAVAILABLE".equals(value)) {
+                        label.setForeground(Color.RED);
+                        label.setFont(label.getFont().deriveFont(Font.BOLD, 16));
+                    }
                 }
 
                 return label;
@@ -52,4 +64,8 @@ public class CustomTable extends JTable {
             }
         });
     }
+
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    };
 }
