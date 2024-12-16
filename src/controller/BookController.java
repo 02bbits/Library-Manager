@@ -244,4 +244,31 @@ public class BookController {
             throw new RuntimeException(e);
         }
     }
+
+    public ArrayList<Book> searchBook(String searchQuery, String columnName) {
+        String sql = "SELECT * FROM BOOK WHERE + " + columnName + " LIKE ?";
+        ArrayList<Book> books = new ArrayList<>();
+
+        try (Connection connection = SQLConnection.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, searchQuery + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("BookID");
+                String title = resultSet.getString("Title");
+                String author = resultSet.getString("Author");
+                String publisher = resultSet.getString("Publisher");
+                String publicationDate = resultSet.getString("PublicationDate");
+                String status = resultSet.getString("Status");
+
+                Book newBook = new Book(id, title, author, publisher, publicationDate, status);
+                books.add(newBook);
+            }
+
+            return books;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

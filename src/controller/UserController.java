@@ -3,8 +3,6 @@ package controller;
 import model.User;
 import util.HashUtil;
 import util.SQLConnection;
-
-import javax.management.relation.Role;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -234,6 +232,31 @@ public class UserController {
             ResultSet resultSet = statement.executeQuery();
 
             return resultSet.isBeforeFirst();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ArrayList<User> searchReaders(String searchQuery, String columnName) {
+        String sql = "SELECT * FROM User WHERE + " + columnName + " LIKE ? AND Role = 'Reader'";
+        ArrayList<User> readers = new ArrayList<>();
+
+        try (Connection connection = SQLConnection.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, searchQuery + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("UserID");
+                String name = resultSet.getString("Username");
+                String email = resultSet.getString("Email");
+                String role = resultSet.getString("Role");
+
+                User newUser = new User(id, name, email, role);
+                readers.add(newUser);
+            }
+
+            return readers;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

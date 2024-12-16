@@ -17,8 +17,12 @@ public class BookPage extends JPanel {
     private JPanel searchPanel;
     private JPanel tablePanel;
     private JPanel buttonPanel;
-    JTable table;
-    DefaultTableModel model;
+    private CardLayout cardLayout = new CardLayout();
+    private JTable normalTable;
+    private JTable searchTable;
+    private JPanel normalTablePanel;
+    private JPanel searchTablePanel;
+    private DefaultTableModel model;
     private final BookController bookController = new BookController();
     private final String PATH = "LibraryManagement/assets/icons/";
 
@@ -47,7 +51,7 @@ public class BookPage extends JPanel {
         searchField.setHint("Search...");
 
         // Workaround for half-rounded JComboBox
-        String[] choices = { "  Search by Title", "  Search by Author", "  Search by Publisher", "  Search by Genre"};
+        String[] choices = {"Filter by Title", "Filter by Author", "Filter by Publisher"};
         JComboBox<String> cb = new JComboBox<>(choices) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -59,7 +63,7 @@ public class BookPage extends JPanel {
                 g2.fillRect(getWidth() / 2 - 10, 0, getWidth(), getHeight());
 
                 g2.setColor(Color.WHITE);
-                g2.drawString(Objects.requireNonNull(getSelectedItem()).toString().substring(0, 17) + "..", 20, 27);
+                g2.drawString(Objects.requireNonNull(getSelectedItem()).toString(), 20, 27);
             }
         };
 
@@ -68,28 +72,60 @@ public class BookPage extends JPanel {
         cb.setBorder(BorderFactory.createEmptyBorder());
         cb.setPreferredSize(new Dimension(180,20));
 
+        searchField.addActionListener(e -> {
+            if (searchField.getText().isEmpty()) {
+                toNormalTable();
+            }
+
+            else {
+                switch (Objects.requireNonNull(cb.getSelectedItem()).toString()) {
+                    case "Filter by Title":
+                        search(searchField.getText(), "Title");
+                        break;
+                    case "Filter by Author":
+                        search(searchField.getText(), "Author");
+                        break;
+                    case "Filter by Publisher":
+                        search(searchField.getText(), "Publisher");
+                        break;
+                }
+            }
+        });
+
         searchPanel.add(cb, BorderLayout.WEST);
         searchPanel.add(searchField, BorderLayout.CENTER);
     }
 
     void initTablePanel() {
-        tablePanel = new JPanel(new BorderLayout());
+        tablePanel = new JPanel(cardLayout);
         tablePanel.setBackground(Color.WHITE);
         tablePanel.setBorder(new EmptyBorder(15,0,15,0));
         tablePanel.putClientProperty(FlatClientProperties.STYLE, "arc:25");
 
-        JPanel marginPanel = new JPanel(new BorderLayout(0,15));   // Nested Panel for element margin
-        marginPanel.setBorder(new EmptyBorder(5,15,10,15));
-        marginPanel.setOpaque(false);
+        // Normal Table Init
+        normalTablePanel = new JPanel(new BorderLayout(0,15));
+        normalTablePanel.setBorder(new EmptyBorder(5,15,10,15));
+        normalTablePanel.setOpaque(false);
 
         BookController bookController = new BookController();
         model = TableUtil.booksToTableModel(bookController.getBooks());
 
-        table = new CustomTable(model);
-        JScrollPane scrollPane = new JScrollPane(table);
-        marginPanel.add(scrollPane, BorderLayout.CENTER);
+        normalTable = new CustomTable(model);
+        JScrollPane scrollPane = new JScrollPane(normalTable);
+        normalTablePanel.add(scrollPane, BorderLayout.CENTER);
 
-        tablePanel.add(marginPanel, BorderLayout.CENTER);
+        // Search Tabel Init
+        searchTablePanel = new JPanel(new BorderLayout(0,15));
+        searchTablePanel.setBorder(new EmptyBorder(5,15,10,15));
+        searchTablePanel.setOpaque(false);
+
+        searchTable = new CustomTable(model);
+        JScrollPane scrollPane2 = new JScrollPane(searchTable);
+        searchTablePanel.add(scrollPane2, BorderLayout.CENTER);
+
+
+        tablePanel.add(normalTablePanel, "Normal Table");
+        tablePanel.add(searchTablePanel, "Search Table");
     }
 
     private void initButtonPanel() {
@@ -99,17 +135,17 @@ public class BookPage extends JPanel {
         // Edit Button
         JButton editButton = new JButton("Edit Row");
         editButton.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
+            int selectedRow = normalTable.getSelectedRow();
 
             if (selectedRow != -1) {
-                Object rawId = table.getValueAt(selectedRow, 0);
+                Object rawId = normalTable.getValueAt(selectedRow, 0);
                 Integer id = Integer.valueOf(rawId.toString());
-                Object title = table.getValueAt(selectedRow, 1);
-                Object author = table.getValueAt(selectedRow, 2);
-                Object publisher = table.getValueAt(selectedRow, 3);
-                Object genres = table.getValueAt(selectedRow, 4);
-                Object publicationDate = table.getValueAt(selectedRow, 5);
-                Object status = table.getValueAt(selectedRow, 6);
+                Object title = normalTable.getValueAt(selectedRow, 1);
+                Object author = normalTable.getValueAt(selectedRow, 2);
+                Object publisher = normalTable.getValueAt(selectedRow, 3);
+                Object genres = normalTable.getValueAt(selectedRow, 4);
+                Object publicationDate = normalTable.getValueAt(selectedRow, 5);
+                Object status = normalTable.getValueAt(selectedRow, 6);
 
                 CustomTextField titleField = new CustomTextField();
                 titleField.setText(title.toString());
@@ -151,12 +187,12 @@ public class BookPage extends JPanel {
                     } else if (!FormatUtil.isValidDate(publicationDateField.getText())) {
                         JOptionPane.showMessageDialog(null, "Invalid date format!\nDates must follow this format: YYYY-DD-MM", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        table.setValueAt(titleField.getText(), selectedRow, 1);
-                        table.setValueAt(authorField.getText(), selectedRow, 2);
-                        table.setValueAt(publisherField.getText(), selectedRow, 3);
-                        table.setValueAt(genresField.getText(), selectedRow, 4);
-                        table.setValueAt(publicationDateField.getText(), selectedRow, 5);
-                        table.setValueAt(statusField.getSelectedItem(), selectedRow, 6);
+                        normalTable.setValueAt(titleField.getText(), selectedRow, 1);
+                        normalTable.setValueAt(authorField.getText(), selectedRow, 2);
+                        normalTable.setValueAt(publisherField.getText(), selectedRow, 3);
+                        normalTable.setValueAt(genresField.getText(), selectedRow, 4);
+                        normalTable.setValueAt(publicationDateField.getText(), selectedRow, 5);
+                        normalTable.setValueAt(statusField.getSelectedItem(), selectedRow, 6);
                         bookController.updateBook(id, titleField.getText(), authorField.getText(), publisherField.getText(), genresField.getText(), publicationDateField.getText(), Objects.requireNonNull(statusField.getSelectedItem()).toString());
                         JOptionPane.showMessageDialog(null, "Row updated successfully!");
                     }
@@ -222,9 +258,9 @@ public class BookPage extends JPanel {
         // Delete Button
         JButton deleteButton = new JButton("Delete Row");
         deleteButton.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
+            int selectedRow = normalTable.getSelectedRow();
             if (selectedRow != -1) {
-                Object tableValue = table.getValueAt(selectedRow, 0);
+                Object tableValue = normalTable.getValueAt(selectedRow, 0);
                 int id = Integer.parseInt(tableValue.toString());
 
                 int result = JOptionPane.showConfirmDialog(null, "\tThis action cannot be undone","Delete row?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -256,5 +292,15 @@ public class BookPage extends JPanel {
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
+    }
+
+    private void toNormalTable() {
+        cardLayout.show(tablePanel, "Normal Table");
+    }
+
+    private void search(String searchQuery, String columnName) {
+        cardLayout.show(tablePanel, "Search Table");
+        DefaultTableModel newModel = TableUtil.booksToTableModel(bookController.searchBook(searchQuery, columnName));
+        searchTable.setModel(newModel);
     }
 }

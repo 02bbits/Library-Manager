@@ -16,11 +16,16 @@ import java.util.Objects;
 public class ReaderPage extends JPanel {
     private JPanel searchPanel;
     private JPanel tablePanel;
+    private JPanel normalTablePanel;
+    private JPanel searchTablePanel;
     private JPanel buttonPanel;
 
-    private CustomTable table;
+    private CustomTable normalTable;
+    private CustomTable searchTable;
+
     private DefaultTableModel model;
     private UserController userController = new UserController();
+    private CardLayout cardLayout = new CardLayout();
 
     private final String PATH = "LibraryManagement/assets/icons/";
 
@@ -48,7 +53,7 @@ public class ReaderPage extends JPanel {
         searchField.setHint("Search...");
 
         // Workaround for half-rounded JComboBox
-        String[] choices = { "  Search by Username", "  Search by Email"};
+        String[] choices = { "Filter by Username", "Filter by Email"};
         JComboBox<String> cb = new JComboBox<>(choices) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -60,7 +65,7 @@ public class ReaderPage extends JPanel {
                 g2.fillRect(getWidth() / 2 - 10, 0, getWidth(), getHeight());
 
                 g2.setColor(Color.WHITE);
-                g2.drawString(Objects.requireNonNull(getSelectedItem()).toString().substring(0, 17) + "..", 20, 27);
+                g2.drawString(Objects.requireNonNull(getSelectedItem()).toString(), 20, 27);
             }
         };
 
@@ -69,27 +74,57 @@ public class ReaderPage extends JPanel {
         cb.setBorder(BorderFactory.createEmptyBorder());
         cb.setPreferredSize(new Dimension(180,20));
 
+        searchField.addActionListener(e -> {
+            if (searchField.getText().isEmpty()) {
+                toNormalTable();
+            }
+
+            else {
+                switch (Objects.requireNonNull(cb.getSelectedItem()).toString()) {
+                    case "Filter by Username":
+                        search(searchField.getText(), "Username");
+                        break;
+                    case "Filter by Email":
+                        search(searchField.getText(), "Email");
+                        break;
+                }
+            }
+        });
+
         searchPanel.add(cb, BorderLayout.WEST);
         searchPanel.add(searchField, BorderLayout.CENTER);
     }
 
     void initTablePanel() {
-        tablePanel = new JPanel(new BorderLayout());
+        tablePanel = new JPanel(cardLayout);
         tablePanel.setBackground(Color.WHITE);
         tablePanel.setBorder(new EmptyBorder(15,0,15,0));
         tablePanel.putClientProperty(FlatClientProperties.STYLE, "arc:25");
 
-        JPanel marginPanel = new JPanel(new BorderLayout(0,15));   // Nested Panel for element margin
-        marginPanel.setBorder(new EmptyBorder(5,15,10,15));
-        marginPanel.setOpaque(false);
+        // Normal Table Init
+        normalTablePanel = new JPanel(new BorderLayout(0,15));
+        normalTablePanel.setBorder(new EmptyBorder(5,15,10,15));
+        normalTablePanel.setOpaque(false);
 
         UserController userController = new UserController();
         model = TableUtil.readersToTableModel(userController.getReaders());
 
-        table = new CustomTable(model);
-        JScrollPane scrollPane = new JScrollPane(table);
-        marginPanel.add(scrollPane, BorderLayout.CENTER);
-        tablePanel.add(marginPanel, BorderLayout.CENTER);
+        normalTable = new CustomTable(model);
+        JScrollPane scrollPane = new JScrollPane(normalTable);
+        normalTablePanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Search Tabel Init
+        searchTablePanel = new JPanel(new BorderLayout(0,15));
+        searchTablePanel.setBorder(new EmptyBorder(5,15,10,15));
+        searchTablePanel.setOpaque(false);
+
+        searchTable = new CustomTable(model);
+        JScrollPane scrollPane2 = new JScrollPane(searchTable);
+        searchTablePanel.add(scrollPane2, BorderLayout.CENTER);
+
+
+        tablePanel.add(normalTablePanel, "Normal Table");
+        tablePanel.add(searchTablePanel, "Search Table");
     }
 
     private void initButtonPanel() {
@@ -99,12 +134,12 @@ public class ReaderPage extends JPanel {
         // Edit Button
         JButton editButton = new JButton("Edit Row");
         editButton.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
+            int selectedRow = normalTable.getSelectedRow();
 
             if (selectedRow != -1) {
-                Object email = table.getValueAt(selectedRow, 2);
-                Object name = table.getValueAt(selectedRow, 1);
-                Object idValue = table.getValueAt(selectedRow, 0);
+                Object email = normalTable.getValueAt(selectedRow, 2);
+                Object name = normalTable.getValueAt(selectedRow, 1);
+                Object idValue = normalTable.getValueAt(selectedRow, 0);
                 int id = Integer.parseInt(idValue.toString());
 
                 CustomTextField nameField = new CustomTextField();
@@ -139,8 +174,8 @@ public class ReaderPage extends JPanel {
                     }
 
                     else {
-                        table.setValueAt(emailField.getText(), selectedRow, 2);
-                        table.setValueAt(nameField.getText(), selectedRow, 1);
+                        normalTable.setValueAt(emailField.getText(), selectedRow, 2);
+                        normalTable.setValueAt(nameField.getText(), selectedRow, 1);
                         userController.updateUser(id, nameField.getText(), emailField.getText(), "Reader");
                         JOptionPane.showMessageDialog(null, "Row updated successfully!");
                     }
@@ -192,9 +227,9 @@ public class ReaderPage extends JPanel {
         // Delete Button
         JButton deleteButton = new JButton("Delete Row");
         deleteButton.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
+            int selectedRow = normalTable.getSelectedRow();
             if (selectedRow != -1) {
-                int id = Integer.parseInt(table.getValueAt(selectedRow,0).toString());
+                int id = Integer.parseInt(normalTable.getValueAt(selectedRow,0).toString());
 
                 int result = JOptionPane.showConfirmDialog(null, "\tThis action cannot be undone","Delete row?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
                 if (result == JOptionPane.OK_OPTION) {
@@ -225,5 +260,15 @@ public class ReaderPage extends JPanel {
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
+    }
+
+    private void toNormalTable() {
+        cardLayout.show(tablePanel, "Normal Table");
+    }
+
+    private void search(String searchQuery, String columnName) {
+        cardLayout.show(tablePanel, "Search Table");
+        DefaultTableModel newModel = TableUtil.usersToTableModel(userController.searchReaders(searchQuery, columnName));
+        searchTable.setModel(newModel);
     }
 }

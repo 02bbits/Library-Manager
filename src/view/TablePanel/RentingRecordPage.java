@@ -2,7 +2,7 @@ package view.TablePanel;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import controller.RentingRecordController;
-import controller.UserController;
+import util.FormatUtil;
 import util.TableUtil;
 import view.other.CustomComponent.CustomTable;
 import view.other.CustomComponent.CustomTextField;
@@ -16,6 +16,16 @@ import java.util.Objects;
 public class RentingRecordPage extends JPanel {
     private JPanel searchPanel;
     private JPanel tablePanel;
+    private JPanel normalTablePanel;
+    private JPanel searchTablePanel;
+
+    private CustomTable normalTable;
+    private CustomTable searchTable;
+
+    private DefaultTableModel model;
+    private final RentingRecordController rentingRecordController = new RentingRecordController();
+    private final CardLayout cardLayout = new CardLayout();
+
     private final String PATH = "LibraryManagement/assets/icons/";
 
     public RentingRecordPage() {
@@ -40,7 +50,7 @@ public class RentingRecordPage extends JPanel {
         searchField.setHint("Search...");
 
         // Workaround for half-rounded JComboBox
-        String[] choices = { "  Search by Username", "  Search by Email"};
+        String[] choices = { "Filter by Rent date (Before)", "Filter by Rent date (After)", "Filter by Due date (Before)", "Filter by Due date (After)"};
         JComboBox<String> cb = new JComboBox<>(choices) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -61,27 +71,75 @@ public class RentingRecordPage extends JPanel {
         cb.setBorder(BorderFactory.createEmptyBorder());
         cb.setPreferredSize(new Dimension(180,20));
 
+        searchField.addActionListener(e -> {
+            if (searchField.getText().isEmpty()) {
+                toNormalTable();
+            }
+
+            else {
+                if (!FormatUtil.isValidDate(searchField.getText())) {
+                    return;
+                }
+
+                switch (Objects.requireNonNull(cb.getSelectedItem()).toString()) {
+                    case "Filter by Rent date (Before)":
+                        search(searchField.getText(), "RentDate", true);
+                        break;
+                    case "Filter by Rent date (After)":
+                        search(searchField.getText(), "RentDate", false);
+                        break;
+                    case "Filter by Due date (Before)":
+                        search(searchField.getText(), "DueDate", true);
+                        break;
+                    case "Filter by Due date (After)":
+                        search(searchField.getText(), "DueDate", false);
+                        break;
+                }
+            }
+        });
+
         searchPanel.add(cb, BorderLayout.WEST);
         searchPanel.add(searchField, BorderLayout.CENTER);
     }
 
     void initTablePanel() {
-        tablePanel = new JPanel(new BorderLayout());
+        tablePanel = new JPanel(cardLayout);
         tablePanel.setBackground(Color.WHITE);
         tablePanel.setBorder(new EmptyBorder(15,0,15,0));
         tablePanel.putClientProperty(FlatClientProperties.STYLE, "arc:25");
 
-        JPanel marginPanel = new JPanel(new BorderLayout(0,15));   // Nested Panel for element margin
-        marginPanel.setBorder(new EmptyBorder(5,15,10,15));
-        marginPanel.setOpaque(false);
+        normalTablePanel = new JPanel(new BorderLayout(0,15));
+        normalTablePanel.setBorder(new EmptyBorder(5,15,10,15));
+        normalTablePanel.setOpaque(false);
 
         RentingRecordController rentingRecordController = new RentingRecordController();
         DefaultTableModel model = TableUtil.rentingRecordsToTableModel(rentingRecordController.getRecords());
 
-        CustomTable table = new CustomTable(model);
-        JScrollPane scrollPane = new JScrollPane(table);
-        marginPanel.add(scrollPane, BorderLayout.CENTER);
+        CustomTable normalTable = new CustomTable(model);
+        JScrollPane scrollPane = new JScrollPane(normalTable);
+        normalTablePanel.add(scrollPane, BorderLayout.CENTER);
 
-        tablePanel.add(marginPanel, BorderLayout.CENTER);
+        // Search Tabel Init
+        searchTablePanel = new JPanel(new BorderLayout(0,15));
+        searchTablePanel.setBorder(new EmptyBorder(5,15,10,15));
+        searchTablePanel.setOpaque(false);
+
+        searchTable = new CustomTable(model);
+        JScrollPane scrollPane2 = new JScrollPane(searchTable);
+        searchTablePanel.add(scrollPane2, BorderLayout.CENTER);
+
+
+        tablePanel.add(normalTablePanel, "Normal Table");
+        tablePanel.add(searchTablePanel, "Search Table");
+    }
+
+    private void toNormalTable() {
+        cardLayout.show(tablePanel, "Normal Table");
+    }
+
+    private void search(String searchQuery, String columnName, boolean beforeMode) {
+        cardLayout.show(tablePanel, "Search Table");
+        DefaultTableModel newModel = TableUtil.rentingRecordsToTableModel(rentingRecordController.searchRecords(searchQuery, columnName, beforeMode));
+        searchTable.setModel(newModel);
     }
 }
