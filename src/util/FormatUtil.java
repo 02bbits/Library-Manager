@@ -2,6 +2,9 @@ package util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -16,9 +19,11 @@ public class FormatUtil {
         dateFormat.setLenient(false);
 
         try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             dateFormat.parse(dateString);
+            LocalDate date1 = LocalDate.parse(dateString, formatter);
             return true;
-        } catch (ParseException e) {
+        } catch (ParseException | DateTimeParseException e) {
             return false;
         }
     }
