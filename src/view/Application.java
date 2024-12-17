@@ -13,7 +13,8 @@ import javax.swing.UIManager;
 
 
 public class Application extends JFrame {
-    private LoginPanel loginPanel;
+    private RegistrationPanel registrationPanel;
+    private final LoginPanel loginPanel;
     private MainPanel mainPanel;
     private static Application app;
     Image img = Toolkit.getDefaultToolkit().getImage("LibraryManagement/assets/banner.png");
@@ -27,6 +28,13 @@ public class Application extends JFrame {
                 g.drawImage(img, 0, 0, this);
             }
         };
+        registrationPanel = new RegistrationPanel() {
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(img, 0, 0, this);
+            }
+        };
+
         setContentPane(loginPanel);
         getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
     }
@@ -38,6 +46,22 @@ public class Application extends JFrame {
         app.setContentPane(app.mainPanel);
         app.mainPanel.applyComponentOrientation(app.getComponentOrientation());
         SwingUtilities.updateComponentTreeUI(app.mainPanel);
+        FlatAnimatedLafChange.hideSnapshotWithAnimation();
+    }
+
+    public static void toLoginPanel() {
+        FlatAnimatedLafChange.showSnapshot();
+        app.setContentPane(app.loginPanel);
+        app.loginPanel.applyComponentOrientation(app.getComponentOrientation());
+        SwingUtilities.updateComponentTreeUI(app.loginPanel);
+        FlatAnimatedLafChange.hideSnapshotWithAnimation();
+    }
+
+    public static void toRegisterPanel() {
+        FlatAnimatedLafChange.showSnapshot();
+        app.setContentPane(app.registrationPanel);
+        app.registrationPanel.applyComponentOrientation(app.getComponentOrientation());
+        SwingUtilities.updateComponentTreeUI(app.registrationPanel);
         FlatAnimatedLafChange.hideSnapshotWithAnimation();
     }
 
