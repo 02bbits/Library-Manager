@@ -6,10 +6,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GraphBar extends JPanel {
+    private int barHeight;
+    private JLabel bar;
 
     public GraphBar(int height, int width, String text) {
+        this.barHeight = height;
 
-        JLabel bar = new JLabel(" ") {
+        bar = new JLabel(" ") {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -20,12 +23,12 @@ public class GraphBar extends JPanel {
 
                 GradientPaint gradient = new GradientPaint(
                         0, 0, new Color(253, 175, 74),
-                        width, height, new Color(247, 165, 64)
+                        width, barHeight, new Color(247, 165, 64)
                 );
 
                 g2d.setPaint(gradient);
                 int arc = 10;
-                g2d.fillRoundRect(60, getHeight() - height, width, height, arc, arc);
+                g2d.fillRoundRect(60, getHeight() - barHeight, width, barHeight, arc, arc);
                 g2d.dispose();
             }
         };
@@ -36,7 +39,7 @@ public class GraphBar extends JPanel {
         title.setForeground(Color.BLACK);
         title.putClientProperty(FlatClientProperties.STYLE, "font:$graph-title.font");
         title.setHorizontalAlignment(JLabel.CENTER);
-        title.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
+        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -44,5 +47,12 @@ public class GraphBar extends JPanel {
         add(title, BorderLayout.SOUTH);
 
         setPreferredSize(new Dimension(width, height + 10));
+    }
+
+    public void setHeight(int height) {
+        this.barHeight = height;
+        bar.setPreferredSize(new Dimension(bar.getWidth(), height));
+        revalidate();
+        bar.repaint();
     }
 }
