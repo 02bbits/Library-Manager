@@ -4,7 +4,7 @@ import view.MessagePanel.MainMessagePage;
 import view.TablePanel.BookPage;
 import view.TablePanel.DashboardPage;
 import view.TablePanel.ReaderPage;
-import view.TablePanel.RentalPage;
+import view.TablePanel.RentingRecordPage;
 import view.other.dashboard.Dashboard;
 
 import javax.swing.*;
@@ -13,8 +13,8 @@ import java.awt.*;
 public class MainPanel extends JPanel {
     private static ContentPanel contentPanel;
 
-    public MainPanel() {
-        Dashboard dashboard = new Dashboard("Username", "Admin");
+    public MainPanel(String username, String role) {
+        Dashboard dashboard = new Dashboard(username, role);
         JPanel dashboardPanel = new JPanel(new BorderLayout());
         dashboardPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         dashboardPanel.add(dashboard, BorderLayout.CENTER);
@@ -48,10 +48,8 @@ public class MainPanel extends JPanel {
             add(bookPage, "Books");
             ReaderPage readerPage = new ReaderPage();
             add(readerPage, "Readers");
-            RentalPage rentalPage = new RentalPage();
-            add(rentalPage, "Rents");
-            MainMessagePage messagePage = new MainMessagePage();
-            add(messagePage, "Messages");
+            RentingRecordPage rentingRecordPage = new RentingRecordPage();
+            add(rentingRecordPage, "Rents");
         }
 
         public CardLayout getCardLayout() {
