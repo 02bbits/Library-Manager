@@ -120,6 +120,27 @@ public class BookController {
         }
     }
 
+    public void rentBook(int bookID, int userID, String rentDate, String dueDate) {
+        String sql = "INSERT INTO RentingRecord (BookID, UserID, RentDate, DueDate) VALUES (?,?,?,?)";
+        String updateBookStatusSql = "UPDATE Book SET Status='UNAVAILABLE' WHERE BookID=?";
+
+        try (Connection connection = SQLConnection.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, userID);
+            preparedStatement.setInt(2, bookID);
+            preparedStatement.setString(3, rentDate);
+            preparedStatement.setString(4, dueDate);
+            preparedStatement.executeUpdate();
+
+            PreparedStatement preparedStatement2 = connection.prepareStatement(updateBookStatusSql);
+            preparedStatement2.setInt(1, bookID);
+            preparedStatement2.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void updateGenres(int BookID, String genres) {
         String deleteGenresSql = "DELETE FROM BookGenre WHERE BookID=?";
         String updateNewGenresSql = "INSERT INTO BookGenre VALUES (?,?)";
@@ -251,7 +272,7 @@ public class BookController {
 
         try (Connection connection = SQLConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, searchQuery + "%");
+            preparedStatement.setString(1,"%" + searchQuery + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {

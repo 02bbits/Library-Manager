@@ -40,8 +40,8 @@ public class UserController {
         }
     }
 
-    public boolean register(String username, String password, String email) throws RuntimeException{
-        String sql = "INSERT INTO User (Username, Password, Email, Role) VALUES(?, ?, ?, 'User')";
+    public void register(String username, String password, String email) throws RuntimeException{
+        String sql = "INSERT INTO User (Username, Password, Email, Role) VALUES(?, ?, ?, 'Staff')";
 
         try (Connection connection = SQLConnection.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -49,11 +49,7 @@ public class UserController {
             statement.setString(2, HashUtil.SHA256(password));
             statement.setString(3, email);
 
-            if (!exist(username)) {
-                statement.executeUpdate();
-                return true;
-            }
-            return false;
+            statement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -67,12 +63,18 @@ public class UserController {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            String name = resultSet.getString("Username");
-            String email = resultSet.getString("Email");
-            String role = resultSet.getString("Role");
+            resultSet.next();
 
-            User newUser = new User(id, name, email, role);
-            return newUser;
+            if (!resultSet.isBeforeFirst()) {
+                String name = resultSet.getString("Username");
+                String email = resultSet.getString("Email");
+                String role = resultSet.getString("Role");
+
+                return new User(id, name, email, role);
+
+            } else {
+                return null;
+            }
 
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
@@ -243,7 +245,7 @@ public class UserController {
 
         try (Connection connection = SQLConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, searchQuery + "%");
+            preparedStatement.setString(1, "%" + searchQuery + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {

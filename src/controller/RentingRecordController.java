@@ -32,6 +32,25 @@ public class RentingRecordController {
         }
     }
 
+    public ArrayList<String> getRentDates() {
+        String sql = "SELECT RentDate FROM RentingRecord";
+        ArrayList<String> dates = new ArrayList<>();
+
+        try (Connection connection = SQLConnection.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                dates.add(resultSet.getString("RentDate"));
+            }
+
+            return dates;
+
+        } catch (SQLException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
     public ArrayList<RentingRecord> searchRecords(String searchQuery, String columnName, boolean dateBefore) {
         String sql = dateBefore ? "SELECT RentalID, RentingRecord.UserID, BookID, RentDate, DueDate FROM RentingRecord JOIN User ON RentingRecord.UserID=User.UserID WHERE " + columnName + "< ?" : "SELECT RentalID, RentingRecord.UserID, BookID, RentDate, DueDate FROM RentingRecord JOIN User ON RentingRecord.UserID=User.UserID WHERE " + columnName + "> ?";
         ArrayList<RentingRecord> records = new ArrayList<>();
@@ -54,6 +73,19 @@ public class RentingRecordController {
             return records;
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
+        }
+    }
+
+    public void returnBook(int recordId) {
+        String sql = "DELETE FROM RentingRecord WHERE RentalID = ?";
+
+        try (Connection connection = SQLConnection.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, recordId);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
