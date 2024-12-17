@@ -16,6 +16,7 @@ import java.util.Objects;
 public class RentingRecordPage extends JPanel {
     private JPanel searchPanel;
     private JPanel tablePanel;
+    private JPanel buttonPanel;
     private JPanel normalTablePanel;
     private JPanel searchTablePanel;
 
@@ -25,6 +26,7 @@ public class RentingRecordPage extends JPanel {
     private DefaultTableModel model;
     private final RentingRecordController rentingRecordController = new RentingRecordController();
     private final CardLayout cardLayout = new CardLayout();
+    private boolean isSearchPanel = false;
 
     private final String PATH = "LibraryManagement/assets/icons/";
 
@@ -34,8 +36,10 @@ public class RentingRecordPage extends JPanel {
 
         initSearchPanel();
         initTablePanel();
+        initButtonPanel();
         add(searchPanel, BorderLayout.NORTH);
         add(tablePanel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private void initSearchPanel() {
@@ -74,6 +78,7 @@ public class RentingRecordPage extends JPanel {
         searchField.addActionListener(e -> {
             if (searchField.getText().isEmpty()) {
                 toNormalTable();
+                isSearchPanel = false;
             }
 
             else {
@@ -98,8 +103,20 @@ public class RentingRecordPage extends JPanel {
             }
         });
 
+        // Refresh button
+        JButton refreshButton = new JButton();
+        refreshButton.setIcon(new ImageIcon(PATH + "refresh.png"));
+        refreshButton.setPreferredSize(new Dimension(50,50));
+        refreshButton.putClientProperty(FlatClientProperties.STYLE, "arc:30");
+        refreshButton.setBackground(new Color(227, 142, 73));
+        refreshButton.addActionListener(e -> {
+            model = TableUtil.rentingRecordsToTableModel(rentingRecordController.getRecords());
+            normalTable.setModel(model);
+        });
+
         searchPanel.add(cb, BorderLayout.WEST);
         searchPanel.add(searchField, BorderLayout.CENTER);
+        searchPanel.add(refreshButton, BorderLayout.EAST);
     }
 
     void initTablePanel() {
@@ -113,9 +130,9 @@ public class RentingRecordPage extends JPanel {
         normalTablePanel.setOpaque(false);
 
         RentingRecordController rentingRecordController = new RentingRecordController();
-        DefaultTableModel model = TableUtil.rentingRecordsToTableModel(rentingRecordController.getRecords());
+        model = TableUtil.rentingRecordsToTableModel(rentingRecordController.getRecords());
 
-        CustomTable normalTable = new CustomTable(model);
+        normalTable = new CustomTable(model);
         JScrollPane scrollPane = new JScrollPane(normalTable);
         normalTablePanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -137,9 +154,41 @@ public class RentingRecordPage extends JPanel {
         cardLayout.show(tablePanel, "Normal Table");
     }
 
+    private void initButtonPanel() {
+        buttonPanel = new JPanel(new GridLayout(1,0));
+        buttonPanel.setPreferredSize(new Dimension(1000,50));
+
+        // Return book Button
+        JButton returnBookButton = new JButton("Return book");
+        returnBookButton.addActionListener(e -> {
+            int selectedRow = isSearchPanel ? searchTable.getSelectedRow() : normalTable.getSelectedRow();
+            if (selectedRow != -1) {
+                int id = Integer.parseInt(normalTable.getValueAt(selectedRow,0).toString());
+
+                int result = JOptionPane.showConfirmDialog(null, "Remove this record","This book has been returned?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                if (result == JOptionPane.OK_OPTION) {
+                    model.removeRow(selectedRow);
+                    rentingRecordController.returnBook(id);
+                    JOptionPane.showMessageDialog(null, "Record has been returned", "Return Book", JOptionPane.OK_CANCEL_OPTION);
+                }
+            }
+
+            else {
+                JOptionPane.showMessageDialog(null, "No row selected!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        returnBookButton.setBackground(new Color(227, 142, 73));
+        returnBookButton.setForeground(Color.WHITE);
+        returnBookButton.putClientProperty(FlatClientProperties.STYLE, "font:bold -1");
+
+        buttonPanel.add(returnBookButton);
+    }
+
     private void search(String searchQuery, String columnName, boolean beforeMode) {
         cardLayout.show(tablePanel, "Search Table");
         DefaultTableModel newModel = TableUtil.rentingRecordsToTableModel(rentingRecordController.searchRecords(searchQuery, columnName, beforeMode));
         searchTable.setModel(newModel);
+        isSearchPanel = true;
     }
 }

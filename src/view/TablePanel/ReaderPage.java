@@ -19,6 +19,7 @@ public class ReaderPage extends JPanel {
     private JPanel normalTablePanel;
     private JPanel searchTablePanel;
     private JPanel buttonPanel;
+    private boolean isSearchPanel = false;
 
     private CustomTable normalTable;
     private CustomTable searchTable;
@@ -134,7 +135,7 @@ public class ReaderPage extends JPanel {
         // Edit Button
         JButton editButton = new JButton("Edit Row");
         editButton.addActionListener(e -> {
-            int selectedRow = normalTable.getSelectedRow();
+            int selectedRow = isSearchPanel ? searchTable.getSelectedRow() : normalTable.getSelectedRow();
 
             if (selectedRow != -1) {
                 Object email = normalTable.getValueAt(selectedRow, 2);
@@ -219,6 +220,8 @@ public class ReaderPage extends JPanel {
                 else {
                     model.addRow(new Object[]{userController.getLatestID() + 1, nameField.getText(), emailField.getText()});
                     userController.addUser(nameField.getText(), emailField.getText());
+                    nameField.setText("");
+                    emailField.setText("");
                     JOptionPane.showMessageDialog(null, "Row added successfully!");
                 }
             }
@@ -227,7 +230,7 @@ public class ReaderPage extends JPanel {
         // Delete Button
         JButton deleteButton = new JButton("Delete Row");
         deleteButton.addActionListener(e -> {
-            int selectedRow = normalTable.getSelectedRow();
+            int selectedRow = isSearchPanel ? searchTable.getSelectedRow() : normalTable.getSelectedRow();
             if (selectedRow != -1) {
                 int id = Integer.parseInt(normalTable.getValueAt(selectedRow,0).toString());
 
@@ -264,11 +267,13 @@ public class ReaderPage extends JPanel {
 
     private void toNormalTable() {
         cardLayout.show(tablePanel, "Normal Table");
+        isSearchPanel = false;
     }
 
     private void search(String searchQuery, String columnName) {
         cardLayout.show(tablePanel, "Search Table");
         DefaultTableModel newModel = TableUtil.usersToTableModel(userController.searchReaders(searchQuery, columnName));
         searchTable.setModel(newModel);
+        isSearchPanel = true;
     }
 }

@@ -2,6 +2,8 @@ package view.TablePanel;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import controller.BookController;
+import controller.UserController;
+import util.DateUtil;
 import util.FormatUtil;
 import util.TableUtil;
 import view.other.CustomComponent.CustomTable;
@@ -18,12 +20,14 @@ public class BookPage extends JPanel {
     private JPanel tablePanel;
     private JPanel buttonPanel;
     private CardLayout cardLayout = new CardLayout();
+    private boolean isSearchPanel = false;
     private JTable normalTable;
     private JTable searchTable;
     private JPanel normalTablePanel;
     private JPanel searchTablePanel;
     private DefaultTableModel model;
     private final BookController bookController = new BookController();
+    private final UserController userController = new UserController();
     private final String PATH = "LibraryManagement/assets/icons/";
 
     public BookPage() {
@@ -123,7 +127,6 @@ public class BookPage extends JPanel {
         JScrollPane scrollPane2 = new JScrollPane(searchTable);
         searchTablePanel.add(scrollPane2, BorderLayout.CENTER);
 
-
         tablePanel.add(normalTablePanel, "Normal Table");
         tablePanel.add(searchTablePanel, "Search Table");
     }
@@ -135,7 +138,7 @@ public class BookPage extends JPanel {
         // Edit Button
         JButton editButton = new JButton("Edit Row");
         editButton.addActionListener(e -> {
-            int selectedRow = normalTable.getSelectedRow();
+            int selectedRow = isSearchPanel ? searchTable.getSelectedRow() : normalTable.getSelectedRow();
 
             if (selectedRow != -1) {
                 Object rawId = normalTable.getValueAt(selectedRow, 0);
@@ -251,6 +254,12 @@ public class BookPage extends JPanel {
                     model.addRow(new Object[]{bookController.getLatestID() + 1, titleField.getText(), authorField.getText(), publisherField.getText(), genresField.getText(), publicationDateField.getText(), Objects.requireNonNull(statusField.getSelectedItem()).toString()});
                     JOptionPane.showMessageDialog(null, "Row added successfully!");
                     bookController.addBook(titleField.getText(), authorField.getText(), publisherField.getText(), genresField.getText(), publicationDateField.getText(), Objects.requireNonNull(statusField.getSelectedItem()).toString());
+                    titleField.setText("");
+                    authorField.setText("");
+                    publisherField.setText("");
+                    genresField.setText("");
+                    publicationDateField.setText("");
+                    statusField.setSelectedItem("");
                 }
             }
         });
@@ -258,7 +267,7 @@ public class BookPage extends JPanel {
         // Delete Button
         JButton deleteButton = new JButton("Delete Row");
         deleteButton.addActionListener(e -> {
-            int selectedRow = normalTable.getSelectedRow();
+            int selectedRow = isSearchPanel ? searchTable.getSelectedRow() : normalTable.getSelectedRow();
             if (selectedRow != -1) {
                 Object tableValue = normalTable.getValueAt(selectedRow, 0);
                 int id = Integer.parseInt(tableValue.toString());
@@ -268,6 +277,76 @@ public class BookPage extends JPanel {
                     model.removeRow(selectedRow);
                     bookController.deleteBook(id);
                     JOptionPane.showMessageDialog(null, "Row removed successfully!");
+                }
+            }
+
+            else {
+                JOptionPane.showMessageDialog(null, "No row selected!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Rent Button
+        JButton rentButton = new JButton("Rent Book");
+        rentButton.addActionListener(e -> {
+            int selectedRow = isSearchPanel ? searchTable.getSelectedRow() : normalTable.getSelectedRow();
+            String status = normalTable.getValueAt(selectedRow,6).toString();
+
+            if (status.trim().equals("UNAVAILABLE")) {
+                JOptionPane.showMessageDialog(null, "Selected book is not available!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (selectedRow != -1) {
+                int bookID = Integer.parseInt(normalTable.getValueAt(selectedRow,0).toString());
+
+                CustomTextField userIDField = new CustomTextField();
+                CustomTextField rentDate = new CustomTextField();
+                CustomTextField dueDate = new CustomTextField();
+
+                JPanel rentPanel = new JPanel(new GridLayout(0, 1, 0, 0));
+                rentPanel.add(new JLabel("UserID:"));
+                rentPanel.add(userIDField);
+                rentPanel.add(new JLabel("Rent Date:"));
+                rentPanel.add(rentDate);
+                rentPanel.add(new JLabel("Due Date:"));
+                rentPanel.add(dueDate);
+
+                int result = JOptionPane.showConfirmDialog(null, rentPanel, "Rent Selected Book",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                boolean fieldsAreBlank = userIDField.getText().isEmpty() || rentDate.getText().isEmpty() || dueDate.getText().isEmpty();
+
+                if (result == JOptionPane.OK_OPTION) {
+                    int userID = Integer.parseInt(userIDField.getText());
+
+                    if (fieldsAreBlank) {
+                        JOptionPane.showMessageDialog(null, "Fields cannot be left empty");
+                    }
+
+                    else if (!FormatUtil.isValidDate(rentDate.getText())) {
+                        JOptionPane.showMessageDialog(null, "Invalid date format!\nDates must follow this format: YYYY-DD-MM", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    else if (!FormatUtil.isValidDate(dueDate.getText())) {
+                        JOptionPane.showMessageDialog(null, "Invalid date format!\nDates must follow this format: YYYY-DD-MM", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    else if (userController.getUser(userID) == null) {
+                        JOptionPane.showMessageDialog(null, "User does not exist!", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    else if (!DateUtil.isDateBefore(rentDate.getText(), dueDate.getText())) {
+                        JOptionPane.showMessageDialog(null, "Rent date cannot be before rent date!", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    else {
+                        bookController.rentBook(bookID, userID, rentDate.getText(), dueDate.getText());
+                        model.setValueAt("UNAVAILABLE", selectedRow, 6);
+                        JOptionPane.showMessageDialog(null, "Rent book successfully!");
+                        userIDField.setText("");
+                        rentDate.setText("");
+                        dueDate.setText("");
+                    }
                 }
             }
 
@@ -289,18 +368,25 @@ public class BookPage extends JPanel {
         deleteButton.setForeground(Color.WHITE);
         deleteButton.putClientProperty(FlatClientProperties.STYLE, "font:bold -1");
 
+        rentButton.setBackground(new Color(10, 57, 129));
+        rentButton.setForeground(Color.WHITE);
+        rentButton.putClientProperty(FlatClientProperties.STYLE, "font:bold -1");
+
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
+        buttonPanel.add(rentButton);
     }
 
     private void toNormalTable() {
         cardLayout.show(tablePanel, "Normal Table");
+        isSearchPanel = false;
     }
 
     private void search(String searchQuery, String columnName) {
         cardLayout.show(tablePanel, "Search Table");
         DefaultTableModel newModel = TableUtil.booksToTableModel(bookController.searchBook(searchQuery, columnName));
         searchTable.setModel(newModel);
+        isSearchPanel = true;
     }
 }
