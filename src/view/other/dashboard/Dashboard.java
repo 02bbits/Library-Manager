@@ -1,6 +1,7 @@
 package view.other.dashboard;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import view.Application;
 import view.MainPanel;
 
 import javax.swing.*;
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 public class Dashboard extends JLayeredPane {
     private JPanel header;
     private JPanel sidebar;
-    private JPanel footer;
     private static ArrayList<DashboardItem> items = new ArrayList<>();
     private final String PATH = "LibraryManagement/assets/icons/";
     private final String username;
@@ -32,7 +32,25 @@ public class Dashboard extends JLayeredPane {
 
         add(header, BorderLayout.NORTH);
         add(sidebar, BorderLayout.CENTER);
-//        add(footer);
+
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.setFocusPainted(false);
+        logoutButton.setBackground(new Color(227, 142, 73));
+        logoutButton.setForeground(Color.BLACK);
+        logoutButton.setPreferredSize(new Dimension(300, 50));
+        logoutButton.setMargin(new Insets(0,15,0,0));
+        logoutButton.putClientProperty(FlatClientProperties.STYLE, "arc:35");
+        logoutButton.setHorizontalAlignment(SwingConstants.CENTER);
+        logoutButton.putClientProperty(FlatClientProperties.STYLE, "font:$dashboard-button.font");
+
+        logoutButton.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(null, "Logging out of your account","Logout?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                Application.toLoginPanel();
+            }
+        });
+
+        add(logoutButton, BorderLayout.SOUTH);
     }
 
     @Override
@@ -89,7 +107,6 @@ public class Dashboard extends JLayeredPane {
 
     private void initSidebar() {
         sidebar = new JPanel();
-        BoxLayout boxLayout = new BoxLayout(sidebar, BoxLayout.Y_AXIS);
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
 
         sidebar.setOpaque(false);
@@ -112,24 +129,19 @@ public class Dashboard extends JLayeredPane {
         addMargin(10);
         sidebar.add(barTitle3);
         addButton("Dashboard", new ImageIcon(PATH + "dashboard.png"), new ImageIcon(PATH + "highlighted-dashboard.png"));
-        addMargin(25);
+        addMargin(35);
 
         sidebar.add(barTitle);
         addButton("Books", new ImageIcon(PATH + "book.png"), new ImageIcon(PATH + "highlighted-book.png"));
+        addMargin(25);
         addButton("Readers", new ImageIcon(PATH + "users.png"), new ImageIcon(PATH + "highlighted-users.png"));
+        addMargin(25);
         addButton("Rents", new ImageIcon(PATH + "highlighted-rent.png"), new ImageIcon(PATH + "rent.png"));
-        addMargin(25);
-
-        sidebar.add(barTitle2);
-        addButton("Messages", new ImageIcon(PATH + "mail.png"), new ImageIcon(PATH + "highlighted-mail.png"));
-        addMargin(25);
+//        sidebar.add(barTitle2);
+//        addButton("Messages", new ImageIcon(PATH + "mail.png"), new ImageIcon(PATH + "highlighted-mail.png"));
+//        addMargin(25);
 
         items.getFirst().changeState();     // default focused item
-    }
-
-    private void initFooter() {
-        footer = new JPanel(new BorderLayout());
-        footer.setOpaque(false);
     }
 
     public static ArrayList<DashboardItem> getItems() {
@@ -168,19 +180,4 @@ public class Dashboard extends JLayeredPane {
     public static void setCurrentItem(DashboardItem item) {
         Dashboard.currentItem = item;
     }
-
-//    @Override
-//    protected void paintComponent(Graphics g) {
-//        super.paintComponent(g);
-//        Graphics2D g2d = (Graphics2D) g;
-//        int width = getWidth();
-//        int height = getHeight();
-//
-//        GradientPaint gradient = new GradientPaint(
-//                0, 0, new Color(18, 28, 62),
-//                0, height, new Color(0, 0, 60)
-//        );
-//        g2d.setPaint(gradient);
-//        g2d.fillRect(0, 0, width, height);
-//    }
 }

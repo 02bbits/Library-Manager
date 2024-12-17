@@ -1,8 +1,10 @@
 package view.other.dashboard;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import util.AnimationUtil;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -12,12 +14,14 @@ public class DashboardItem extends JButton {
     private final ImageIcon highlightedIcon;
     private final String buttonName;
     private final Color defaultColor = new Color(0, 0, 60);
+    private final String defaultText;
 
     public DashboardItem(String name, ImageIcon icon, ImageIcon highlightedIcon) {
         super("    " + name);
         buttonName = name;
         this.highlightedIcon = highlightedIcon;
         this.icon = icon;
+        defaultText = getText();
         setIcon(icon);
         setForeground(Color.WHITE);
         setBackground(defaultColor);
@@ -25,7 +29,7 @@ public class DashboardItem extends JButton {
         putClientProperty(FlatClientProperties.STYLE, "arc:35");
         putClientProperty(FlatClientProperties.STYLE, "font:$dashboard-button.font");
         setMaximumSize(new Dimension(300, 50));
-        setHorizontalAlignment(SwingConstants.LEFT);
+        setHorizontalAlignment(JLabel.LEFT);
         setMargin(new Insets(0,15,0,0));
         setFocusPainted(false);
 
@@ -42,6 +46,20 @@ public class DashboardItem extends JButton {
         });
     }
 
+    private void startAnimation() {
+        Color startColor = isOpen ? defaultColor : new Color(227, 142, 73);
+        Color endColor = isOpen ? new Color(227, 142, 73) : defaultColor;
+        AnimationUtil.changeColor(startColor, endColor, this);
+
+        Color startTextColor = isOpen ? Color.WHITE : Color.BLACK;
+        Color endTextColor = isOpen ? Color.black : Color.WHITE;
+        AnimationUtil.changeForegroundColor(startTextColor, endTextColor, this);
+
+        int Alignment = isOpen ? JLabel.CENTER : JLabel.LEFT;
+        setHorizontalAlignment(Alignment);
+        setText(isOpen ? getText() + "          ▶" : defaultText);
+    }
+
     public boolean isOpen() {
         return isOpen;
     }
@@ -52,8 +70,7 @@ public class DashboardItem extends JButton {
 
     public void changeState() {
         isOpen = !isOpen;
-        setBackground(isOpen ? new Color(227, 142, 73) : defaultColor);
-        setForeground(isOpen ? Color.BLACK : Color.WHITE);
+        startAnimation();
         setIcon(isOpen ? highlightedIcon : icon);
     }
 }
