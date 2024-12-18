@@ -18,8 +18,8 @@ public class Application extends JFrame {
     private final LoginPanel loginPanel;
     private MainPanel mainPanel;
     private static Application app;
-    Image img = Toolkit.getDefaultToolkit().getImage("LibraryManagement" + File.separator + "assets" + File.separator + "banner.png");
-    public static final String ICON_PATH = "LibraryManagement" + File.separator + "assets" + File.separator + "icons" + File.separator;
+    Image img = Toolkit.getDefaultToolkit().getImage(new File("assets" + File.separator + "banner.png").getAbsolutePath());
+    public static final String ICON_PATH =  new File("assets" + File.separator + "icons").getAbsolutePath() + File.separator;
 
     public Application() {
         setLayout(new CardLayout());
