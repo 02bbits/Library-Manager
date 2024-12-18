@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import controller.RentingRecordController;
 import util.FormatUtil;
 import util.TableUtil;
+import view.Application;
 import view.other.CustomComponent.CustomTable;
 import view.other.CustomComponent.CustomTextField;
 
@@ -28,7 +29,7 @@ public class RentingRecordPage extends JPanel {
     private final CardLayout cardLayout = new CardLayout();
     private boolean isSearchPanel = false;
 
-    private final String PATH = "LibraryManagement/assets/icons/";
+    private final String PATH = Application.ICON_PATH;
 
     public RentingRecordPage() {
         setLayout(new BorderLayout(0,20));

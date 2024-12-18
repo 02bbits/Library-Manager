@@ -1,11 +1,10 @@
 package view;
 
-import view.MessagePanel.MainMessagePage;
 import view.TablePanel.BookPage;
 import view.TablePanel.DashboardPage;
 import view.TablePanel.ReaderPage;
 import view.TablePanel.RentingRecordPage;
-import view.other.dashboard.Dashboard;
+import view.other.Dashboard.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;

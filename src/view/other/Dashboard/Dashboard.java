@@ -1,4 +1,4 @@
-package view.other.dashboard;
+package view.other.Dashboard;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import view.Application;
@@ -12,7 +12,7 @@ public class Dashboard extends JLayeredPane {
     private JPanel header;
     private JPanel sidebar;
     private static ArrayList<DashboardItem> items = new ArrayList<>();
-    private final String PATH = "LibraryManagement/assets/icons/";
+    private final String PATH = Application.ICON_PATH;
     private final String username;
     private final String role;
     private static DashboardItem currentItem;      // pointer to the current focused item

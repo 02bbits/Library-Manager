@@ -6,6 +6,7 @@ import controller.UserController;
 import util.DateUtil;
 import util.FormatUtil;
 import util.TableUtil;
+import view.Application;
 import view.other.CustomComponent.CustomTable;
 import view.other.CustomComponent.CustomTextField;
 
@@ -28,7 +29,7 @@ public class BookPage extends JPanel {
     private DefaultTableModel model;
     private final BookController bookController = new BookController();
     private final UserController userController = new UserController();
-    private final String PATH = "LibraryManagement/assets/icons/";
+    private final String PATH = Application.ICON_PATH;
 
     public BookPage() {
         setLayout(new BorderLayout(0,20));

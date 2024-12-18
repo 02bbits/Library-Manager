@@ -8,6 +8,7 @@ import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import java.awt.Dimension;
+import java.io.File;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -17,7 +18,8 @@ public class Application extends JFrame {
     private final LoginPanel loginPanel;
     private MainPanel mainPanel;
     private static Application app;
-    Image img = Toolkit.getDefaultToolkit().getImage("LibraryManagement/assets/banner.png");
+    Image img = Toolkit.getDefaultToolkit().getImage("LibraryManagement" + File.separator + "assets" + File.separator + "banner.png");
+    public static final String ICON_PATH = "LibraryManagement" + File.separator + "assets" + File.separator + "icons" + File.separator;
 
     public Application() {
         setLayout(new CardLayout());
@@ -65,7 +67,7 @@ public class Application extends JFrame {
         FlatAnimatedLafChange.hideSnapshotWithAnimation();
     }
 
-    public static void main(String[] args) {
+    public void run() {
         try {
             UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
         } catch(Exception ignored){}

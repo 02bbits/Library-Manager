@@ -5,6 +5,7 @@ import controller.BookController;
 import controller.RentingRecordController;
 import controller.UserController;
 import util.DateUtil;
+import view.Application;
 import view.other.Graph.GraphBar;
 import view.other.Graph.GraphPanel;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 public class DashboardPage extends JPanel {
     private final JPanel totalInfoPanel;
     private final JPanel analysisPanel;
-    private final String PATH = "LibraryManagement/assets/icons/";
+    private final String PATH = Application.ICON_PATH;
     private GraphPanel graphs;
 
     UserController userController = new UserController();

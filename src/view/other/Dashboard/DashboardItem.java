@@ -1,10 +1,9 @@
-package view.other.dashboard;
+package view.other.Dashboard;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import util.AnimationUtil;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
